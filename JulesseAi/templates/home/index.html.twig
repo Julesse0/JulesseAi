@@ -1,85 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>API</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7fc;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<div>
+    <h2>Chatbot</h2>
+    <div id="chat-container">
+        <div id="chat-messages">
+            {% for item in data %}
+                <p><strong>Vous:</strong> {{ item.message }}</p>
+                <p><strong>Bot:</strong> {{ item.response }}</p>
+            {% endfor %}
+        </div>
+        <input type="text" id="user-input" placeholder="Posez une question...">
+        <button onclick="sendMessage()">Envoyer</button>
+    </div>
+</div>
 
-        .container {
-            max-width: 450px;
-            padding: 25px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+<script>
+async function sendMessage() {
+    let input = document.getElementById("user-input");
+    let message = input.value.trim();
+    if (!message) return;
 
-        h1 {
-            color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
+    let chatMessages = document.getElementById("chat-messages");
+    chatMessages.innerHTML += `<p><strong>Vous:</strong> ${message}</p>`;
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
+    input.value = "";
 
-        ul li {
-            background: #f4f7fc;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-size: 18px;
-            color: #34495e;
-        }
+    let response = await fetch("{{ path('chatbot') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message })
+    });
 
-        ul li:nth-child(odd) {
-            background: #e9ecef;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        form button {
-            padding: 12px 20px;
-            font-size: 16px;
-            color: #ffffff;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        form button:hover {
-            opacity: 0.85;
-        }
-    </style>
-</head>
-<body>
-    <ul>
-        {% for item in data %}
-            <li>{{ item.anime }} - {{ item.traduction }}</li>
-        {% endfor %}
-    </ul>
-
-    <form action="{{ path('app_logout') }}" method="post">
-        <button type="submit">Logout</button>
-    </form>
-
-</body>
-</html>
+    let data = await response.json();
+    chatMessages.innerHTML += `<p><strong>Bot:</strong> ${data.response}</p>`;
+}
+</script>

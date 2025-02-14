@@ -15,38 +15,36 @@ class Data
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $anime = null;
+    #[ORM\Column(type: "text")]
+    private ?string $message = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $traduction = null;
+    #[ORM\Column(type: "text", nullable: true)]
+    private ?string $response = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAnime(): ?string
+    public function getMessage(): ?string
     {
-        return $this->anime;
+        return $this->message;
     }
 
-    public function setAnime(string $anime): static
+    public function setMessage(string $message): static
     {
-        $this->anime = $anime;
-
+        $this->message = $message;
         return $this;
     }
 
-    public function getTraduction(): ?string
+    public function getResponse(): ?string
     {
-        return $this->traduction;
+        return $this->response;
     }
 
-    public function setTraduction(?string $traduction): static
+    public function setResponse(?string $response): static
     {
-        $this->traduction = $traduction;
-
+        $this->response = $response;
         return $this;
     }
 }
